@@ -7,7 +7,7 @@ const BarcodeScanner = ({ onDetected }) => {
   const [scanning, setScanning] = useState(false);
   const [error, setError] = useState("");
   const codeReader = useRef(null);
-  const controlsRef = useRef(null); // <-- STORE CONTROLS OBJECT
+  const controlsRef = useRef(null);
 
   useEffect(() => {
     codeReader.current = new BrowserMultiFormatReader();
@@ -81,11 +81,16 @@ const BarcodeScanner = ({ onDetected }) => {
         borderRadius: 12,
       }}
     >
-      <h2>Barcode Scanner</h2>
+      <div
+        style={{ marginTop: 16, marginBottom: 16, color: "#888", fontSize: 13 }}
+      >
+        <strong>Tip:</strong> Point your camera at a barcode. Works best in good
+        lighting.
+      </div>
       <div className="text-center">
         <div className="relative">
           {/* Scanner with border and subtle shadow */}
-          <div className="border-4 border-blue-100 rounded-xl shadow-lg overflow-hidden">
+          <div className=" border-blue-100 rounded-xl shadow-lg overflow-hidden">
             <video
               ref={videoRef}
               className="border-4 w-[100%] border-blue-100 rounded-xl shadow-lg overflow-hidden"
@@ -151,10 +156,6 @@ const BarcodeScanner = ({ onDetected }) => {
       {/* {error && (
         <div style={{ marginTop: 16, color: "red" }}>Error: {error}</div>
       )} */}
-      <div style={{ marginTop: 16, color: "#888", fontSize: 13 }}>
-        <strong>Tip:</strong> Point your camera at a barcode. Works best in good
-        lighting.
-      </div>
     </div>
   );
 };

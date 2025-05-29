@@ -11,10 +11,8 @@ import PayWithCashfreeButton from "./Cashfree";
 export default function Scan() {
   const [activeStep, setActiveStep] = useState("scan"); // 'scan', 'review', 'pay', 'user'
   const [cartItems, setCartItems] = useState([]);
-  const [scanError, setScanError] = useState(null);
-  const [isScanning, setIsScanning] = useState(false);
   const [payment, setPayment] = useState(false);
-
+  const [userDetails, setUserDetails] = useState(null);
   const [lastAdded, setLastAdded] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
 
@@ -168,6 +166,7 @@ export default function Scan() {
               Pay
             </button>
           </div>
+          <div></div>
 
           {/* Step Content */}
 
@@ -377,6 +376,8 @@ export default function Scan() {
           totalAmount={total}
           setPayment={setPayment}
           cartItems={cartItems}
+          setCartItems={setCartItems}
+          setActiveStep={setActiveStep}
         />
       )}
     </div>

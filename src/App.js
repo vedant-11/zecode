@@ -20,7 +20,7 @@ function App() {
     // fetchProductInfo(barcode);
   };
   return (
-    <div>
+    <div className="md:w-[80%] mx-auto min-h-screen bg-gray-50 flex items-center flex-col justify-start">
       <Scan />
 
       {/* <UserDetailsForm/> */}
