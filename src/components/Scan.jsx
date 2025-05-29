@@ -9,7 +9,7 @@ import { color, number } from "framer-motion";
 import CashfreePayButton from "./Cashfree";
 import PayWithCashfreeButton from "./Cashfree";
 export default function Scan() {
-  const [activeStep, setActiveStep] = useState("scan"); // 'scan', 'review', 'pay', 'user'
+  const [activeStep, setActiveStep] = useState("review"); // 'scan', 'review', 'pay', 'user'
   const [cartItems, setCartItems] = useState([]);
   const [payment, setPayment] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
@@ -257,10 +257,10 @@ export default function Scan() {
                               <span>₹{total}</span>
                             </div>
                           </div>
-                          <div className="mt-6 flex row-gap-4 justify-between">
+                          <div className="mt-6 flex  md:flex-row flex-col row-gap-4 justify-between">
                             <button
                               onClick={() => setActiveStep("scan")}
-                              className="mt-2 bg-black hover:bg-green-700 text-white font-small rounded-3xl py-2 px-4 rounded"
+                              className="mt-2 bg-black hover:bg-green-700 mb-5 md:mb-0 text-white font-small rounded-3xl py-2 px-4 rounded"
                             >
                               Back to scan
                             </button>
