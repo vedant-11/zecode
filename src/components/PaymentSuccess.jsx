@@ -150,22 +150,22 @@ const PaymentSuccess = ({
           </div>
 
           {/* Footer */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2 }}
-            className="no-print p-6 border-t border-gray-200 text-center"
-          >
-            <button
-              onClick={handleDownloadPDF}
-              className="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium mr-4"
-            >
-              <Download className="h-5 w-5 mr-2" />
-              Download Receipt
-            </button>
-          </motion.div>
         </motion.div>
       </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="no-print p-6 border-t border-gray-200 text-center"
+      >
+        <button
+          onClick={handleDownloadPDF}
+          className="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium mr-4"
+        >
+          <Download className="h-5 w-5 mr-2" />
+          Download Receipt
+        </button>
+      </motion.div>
     </div>
   );
 };

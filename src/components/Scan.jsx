@@ -126,259 +126,180 @@ export default function Scan() {
 
   return (
     <div className="container">
-      {activeStep === "user" && (
+      {activeStep === "user" ? (
         <UserDetailsForm setActiveStep={setActiveStep} />
-      )}
-      {!payment ? (
-        <div className="min-h-screen bg-gray-50 p-4">
-          {/* Navigation Tabs */}
-          <div className="flex justify-between mb-8 bg-white rounded-lg shadow">
-            <button
-              onClick={() => setActiveStep("scan")}
-              className={`flex-1 py-3 px-4 text-center font-medium ${
-                activeStep === "scan"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-500"
-              }`}
-            >
-              Scan
-            </button>
-            <button
-              onClick={() => setActiveStep("review")}
-              className={`flex-1 py-3 px-4 text-center font-medium ${
-                activeStep === "review"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-500"
-              }`}
-              disabled={cartItems.length === 0}
-            >
-              Review Cart
-            </button>
-            <button
-              onClick={() => setActiveStep("pay")}
-              className={`flex-1 py-3 px-4 text-center font-medium ${
-                activeStep === "pay"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-500"
-              }`}
-              disabled={cartItems.length === 0}
-            >
-              Pay
-            </button>
-          </div>
-          <div></div>
+      ) : (
+        <>
+          {" "}
+          {!payment ? (
+            <div className="min-h-screen bg-gray-50 p-4">
+              {/* Navigation Tabs */}
+              <div className="flex justify-between mb-8 bg-white rounded-lg shadow">
+                <button
+                  onClick={() => setActiveStep("scan")}
+                  className={`flex-1 py-3 px-4 text-center font-medium ${
+                    activeStep === "scan"
+                      ? "text-blue-600 border-b-2 border-blue-600"
+                      : "text-gray-500"
+                  }`}
+                >
+                  Scan
+                </button>
+                <button
+                  onClick={() => setActiveStep("review")}
+                  className={`flex-1 py-3 px-4 text-center font-medium ${
+                    activeStep === "review"
+                      ? "text-blue-600 border-b-2 border-blue-600"
+                      : "text-gray-500"
+                  }`}
+                  disabled={cartItems.length === 0}
+                >
+                  Cart
+                </button>
+                <button
+                  onClick={() => setActiveStep("pay")}
+                  className={`flex-1 py-3 px-4 text-center font-medium ${
+                    activeStep === "pay"
+                      ? "text-blue-600 border-b-2 border-blue-600"
+                      : "text-gray-500"
+                  }`}
+                  disabled={cartItems.length === 0}
+                >
+                  Pay
+                </button>
+              </div>
+              <div className="flex py-2 px-4 justify-between mb-8 bg-white rounded-md shadow">
+                <div>
+                  <span className="text-blue-600">Hello, </span>
+                  {localStorage.getItem("userDetails")?.includes("firstName")
+                    ? JSON.parse(localStorage.getItem("userDetails")).firstName
+                    : " Guest"}
+                </div>
 
-          {/* Step Content */}
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("userDetails");
+                    setActiveStep("user");
+                  }}
+                  className="ml-2 text-red-600 hover:underline"
+                >
+                  Logout
+                </button>
+              </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            {activeStep === "scan" && (
-              <div className="text-center">
-                <BarcodeScanner onDetected={handleDetected} />
-                {/* <h2 className="text-xl font-small mt-3 mb-4">Scan Item to add to your cart</h2> */}
+              {/* Step Content */}
 
-                {/* <button
+              <div className="bg-white rounded-lg shadow-md p-6">
+                {activeStep === "scan" && (
+                  <div className="text-center">
+                    <BarcodeScanner onDetected={handleDetected} />
+                    {/* <h2 className="text-xl font-small mt-3 mb-4">Scan Item to add to your cart</h2> */}
+
+                    {/* <button
                             onClick={handleScan}
                             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg mb-4"
                         >
                             Simulate Scan
                         </button> */}
-                {/* <p className="text-gray-600 mt-1">Items in cart: {cartItems.length}</p> */}
+                    {/* <p className="text-gray-600 mt-1">Items in cart: {cartItems.length}</p> */}
 
-                {cartItems.length > 0 ? (
-                  // <p className="text-gray-600 mt-1">
-                  //     Last added: {cartItems[cartItems.length - 1].name} (${cartItems[cartItems.length - 1].barcode})
-                  // </p>
-                  <CartItem
-                    product={
-                      productDatabase[cartItems[cartItems.length - 1].barcode]
-                    }
-                    setCartItems={setCartItems}
-                    productId={cartItems[cartItems.length - 1].id}
-                  />
-                ) : (
-                  <p className="text-gray-600 mt-1">Your cart is empty</p>
+                    {cartItems.length > 0 && (
+                      <CartItem
+                        product={
+                          productDatabase[
+                            cartItems[cartItems.length - 1].barcode
+                          ]
+                        }
+                        setCartItems={setCartItems}
+                        productId={cartItems[cartItems.length - 1].id}
+                      />
+                    )}
+
+                    {/* <CartItem product={product} /> */}
+
+                    {cartItems.length > 0 && (
+                      <button
+                        onClick={() => {
+                          localStorage
+                            .getItem("userDetails")
+                            .includes("firstName")
+                            ? setActiveStep("review")
+                            : setActiveStep("user");
+                        }}
+                        className="mt-4 bg-black hover:bg-green-700 text-white font-small rounded-3xl py-2 px-4 rounded"
+                      >
+                        Proceed to Review →
+                      </button>
+                    )}
+                  </div>
                 )}
 
-                {/* <CartItem product={product} /> */}
-
-                {cartItems.length > 0 && (
-                  <button
-                    onClick={() => setActiveStep("user")}
-                    className="mt-4 bg-black hover:bg-green-700 text-white font-small rounded-3xl py-2 px-4 rounded"
-                  >
-                    Proceed to Review →
-                  </button>
+                {activeStep === "review" && (
+                  <div>
+                    <h2 className="text-xl font-bold mb-4">Your Cart</h2>
+                    <div className="mb-6">
+                      {cartItems.length === 0 ? (
+                        <p className="text-gray-500">Your cart is empty</p>
+                      ) : (
+                        <>
+                          <ul className="divide-y divide-gray-200">
+                            {cartItems.map((item) => (
+                              <CartItem
+                                key={item.id}
+                                productId={item.id}
+                                product={productDatabase[item.barcode]}
+                                setCartItems={setCartItems}
+                              />
+                            ))}
+                          </ul>
+                          <div className="border-t border-gray-200 pt-4">
+                            <div className="flex justify-between font-bold text-lg">
+                              <span>Total:</span>
+                              <span>₹{total}</span>
+                            </div>
+                          </div>
+                          <div className="mt-6 flex row-gap-4 justify-between">
+                            <button
+                              onClick={() => setActiveStep("scan")}
+                              className="mt-2 bg-black hover:bg-green-700 text-white font-small rounded-3xl py-2 px-4 rounded"
+                            >
+                              Back to scan
+                            </button>
+                            <PayWithCashfreeButton
+                              setPayment={setPayment}
+                              amount={total}
+                              name="Test User"
+                              email="test@example.com"
+                              phone="9999999999"
+                              orderId={`order_${
+                                Math.floor(
+                                  Math.random() * (999999 - 100000 + 1)
+                                ) + 100000
+                              }`}
+                              customerId={`customer_${
+                                Math.floor(
+                                  Math.random() * (999999 - 100000 + 1)
+                                ) + 100000
+                              }`}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
-            )}
-
-            {activeStep === "review" && (
-              <div>
-                <h2 className="text-xl font-bold mb-4">Review Your Cart</h2>
-                <div className="mb-6">
-                  {cartItems.length === 0 ? (
-                    <p className="text-gray-500">Your cart is empty</p>
-                  ) : (
-                    <ul className="divide-y divide-gray-200">
-                      {cartItems.map((item) => (
-                        <CartItem
-                          key={item.id}
-                          productId={item.id}
-                          product={productDatabase[item.barcode]}
-                          setCartItems={setCartItems}
-                        />
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <div className="border-t border-gray-200 pt-4">
-                  <div className="flex justify-between font-bold text-lg">
-                    <span>Total:</span>
-                    <span>₹{total}</span>
-                  </div>
-                </div>
-                <div className="mt-6 flex justify-between">
-                  <button
-                    onClick={() => setActiveStep("scan")}
-                    className="mt-2 bg-black hover:bg-green-700 text-white font-small rounded-3xl py-2 px-4 rounded"
-                  >
-                    Back to Scan
-                  </button>
-                  <PayWithCashfreeButton
-                    setPayment={setPayment}
-                    amount={90}
-                    name="Test User"
-                    email="test@example.com"
-                    phone="9999999999"
-                    orderId={`order_${
-                      Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-                    }`}
-                    customerId={`customer_${
-                      Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-                    }`}
-                  />
-                </div>
-              </div>
-            )}
-
-            {activeStep === "pay" && (
-              <div>
-                <h2 className="text-xl font-bold mb-4">Payment</h2>
-                <div className="mb-6">
-                  <p className="font-bold text-lg mb-2">Total: ₹{total}</p>
-
-                  {/* Payment Method Selection */}
-                  <div className="mb-6">
-                    <label className="block text-gray-700 mb-2">
-                      Payment Method
-                    </label>
-                    <div className="flex space-x-4 mb-4">
-                      <button className="flex items-center justify-center p-3 border rounded-lg flex-1 bg-white hover:bg-gray-50">
-                        <span className="mr-2">💳</span> Card
-                      </button>
-                      <button className="flex items-center justify-center p-3 border rounded-lg flex-1 bg-white hover:bg-gray-50">
-                        <span className="mr-2">📱</span> UPI
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Card Payment Form */}
-                  <div className="space-y-4 mb-6">
-                    <div>
-                      <label className="block text-gray-700 mb-1">
-                        Card Number
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="1234 5678 9012 3456"
-                        className="w-full p-2 border border-gray-300 rounded"
-                      />
-                    </div>
-                    <div className="flex space-x-4">
-                      <div className="flex-1">
-                        <label className="block text-gray-700 mb-1">
-                          Expiry
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="MM/YY"
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <label className="block text-gray-700 mb-1">CVV</label>
-                        <input
-                          type="text"
-                          placeholder="123"
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* UPI Payment Form */}
-                  <div className="space-y-4 mb-6">
-                    <div>
-                      <label className="block text-gray-700 mb-1">UPI ID</label>
-                      <input
-                        type="text"
-                        placeholder="yourname@upi"
-                        className="w-full p-2 border border-gray-300 rounded"
-                      />
-                    </div>
-                    <div className="flex space-x-2">
-                      <button className="flex items-center justify-center p-2 border rounded-lg bg-white hover:bg-gray-50">
-                        <img
-                          src="https://img.icons8.com/?size=100&id=am4ltuIYDpQ5&format=png&color=000000"
-                          alt="Google Pay"
-                          className="h-6 w-6"
-                        />
-                      </button>
-                      <button className="flex items-center justify-center p-2 border rounded-lg bg-white hover:bg-gray-50">
-                        <img
-                          src="https://img.icons8.com/?size=100&id=OYtBxIlJwMGA&format=png&color=000000"
-                          alt="PhonePe"
-                          className="h-6 w-6"
-                        />
-                      </button>
-                      <button className="flex items-center justify-center p-2 border rounded-lg bg-white hover:bg-gray-50">
-                        <img
-                          src="https://img.icons8.com/?size=100&id=68067&format=png&color=000000"
-                          alt="Paytm"
-                          className="h-6 w-6"
-                        />
-                      </button>
-                      <button className="flex items-center justify-center p-2 border rounded-lg bg-white hover:bg-gray-50">
-                        <img
-                          src="https://img.icons8.com/?size=100&id=5RcHTSNy4fbL&format=png&color=000000"
-                          alt="BHIM"
-                          className="h-6 w-6"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex justify-between">
-                  <button
-                    onClick={() => setActiveStep("review")}
-                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-                  >
-                    Back to Cart
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      ) : (
-        <PaymentSuccess
-          totalAmount={total}
-          setPayment={setPayment}
-          cartItems={cartItems}
-          setCartItems={setCartItems}
-          setActiveStep={setActiveStep}
-        />
+            </div>
+          ) : (
+            <PaymentSuccess
+              totalAmount={total}
+              setPayment={setPayment}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              setActiveStep={setActiveStep}
+            />
+          )}
+        </>
       )}
     </div>
   );

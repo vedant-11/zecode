@@ -1,5 +1,5 @@
 import { div } from "framer-motion/client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MobileNumber from "./MobileNumber";
 
 const UserDetailsForm = ({ setActiveStep }) => {
@@ -11,7 +11,9 @@ const UserDetailsForm = ({ setActiveStep }) => {
   });
 
   const [showUserForm, setUserForm] = useState(false);
-
+  useEffect(() => {
+    setActiveStep("user");
+  }, [setActiveStep]);
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -25,9 +27,6 @@ const UserDetailsForm = ({ setActiveStep }) => {
     // Handle form submission logic here
     localStorage.setItem("userDetails", JSON.stringify(formData));
     console.log("Form submitted:", formData);
-  };
-
-  const onSubmit = () => {
     setUserForm(true);
   };
 
@@ -117,7 +116,7 @@ const UserDetailsForm = ({ setActiveStep }) => {
                   <button
                     type="submit"
                     className="mt-4 bg-black hover:bg-gray-800 text-white text-sm font-medium py-2 px-4 rounded-3xl transition-colors"
-                    onClick={onSubmit}
+                    onClick={handleSubmit}
                   >
                     Continue
                   </button>
@@ -125,7 +124,7 @@ const UserDetailsForm = ({ setActiveStep }) => {
                   <button
                     type="button"
                     className="w-full bg-transparent hover:font-gray-100 text-gray-800 text-sm font-small py-2 px-4 "
-                    onClick={onSubmit}
+                    onClick={handleSubmit}
                   >
                     Skip and Continue
                   </button>
