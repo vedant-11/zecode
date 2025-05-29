@@ -220,9 +220,8 @@ export default function Scan() {
                     {cartItems.length > 0 && (
                       <button
                         onClick={() => {
-                          localStorage
-                            .getItem("userDetails")
-                            .includes("firstName")
+                          JSON.parse(localStorage.getItem("userDetails"))
+                            ?.firstName.length > 0
                             ? setActiveStep("review")
                             : setActiveStep("user");
                         }}
