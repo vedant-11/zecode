@@ -9,7 +9,7 @@ import { color, number } from "framer-motion";
 import CashfreePayButton from "./Cashfree";
 import PayWithCashfreeButton from "./Cashfree";
 export default function Scan() {
-  const [activeStep, setActiveStep] = useState("review"); // 'scan', 'review', 'pay', 'user'
+  const [activeStep, setActiveStep] = useState("scan"); // 'scan', 'review', 'pay', 'user'
   const [cartItems, setCartItems] = useState([]);
   const [payment, setPayment] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
