@@ -1,72 +1,81 @@
 import React, { useRef, useEffect, useState } from "react";
-import { BrowserMultiFormatReader } from "@zxing/browser";
+import { Html5Qrcode } from "html5-qrcode";
 
 const BarcodeScanner = ({ onDetected }) => {
-  const videoRef = useRef(null);
-  const [barcode, setBarcode] = useState("");
+  const scannerRef = useRef(null);
   const [scanning, setScanning] = useState(false);
+  const [barcode, setBarcode] = useState("");
   const [error, setError] = useState("");
-  const codeReader = useRef(null);
-  const controlsRef = useRef(null);
+
+  // This will hold the html5-qrcode instance
+  const html5QrCodeRef = useRef(null);
 
   useEffect(() => {
-    codeReader.current = new BrowserMultiFormatReader();
-    // Clean up on unmount
+    // Cleanup scanner on unmount
     return () => {
-      if (controlsRef.current) {
-        controlsRef.current.stop();
-      }
+      stopScan();
     };
+    // eslint-disable-next-line
   }, []);
-
-  const getRearCameraId = async () => {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoDevices = devices.filter(
-      (device) => device.kind === "videoinput"
-    );
-    // Prefer rear cam
-    const rearCamera = videoDevices.find(
-      (device) =>
-        device.label.toLowerCase().includes("back") ||
-        device.label.toLowerCase().includes("rear") ||
-        device.label.toLowerCase().includes("environment")
-    );
-    return rearCamera ? rearCamera.deviceId : videoDevices[0]?.deviceId || null;
-  };
 
   const startScan = async () => {
     setError("");
     setBarcode("");
     setScanning(true);
 
-    try {
-      const deviceId = await getRearCameraId();
-      // if (!deviceId) throw new Error("No camera found");
+    // If already running, stop and reset
+    stopScan();
 
-      controlsRef.current = await codeReader.current.decodeFromVideoDevice(
-        null,
-        videoRef.current,
-        (result, err) => {
-          if (result) {
-            setBarcode(result.getText());
-            if (onDetected) onDetected(result.getText());
-            stopScan();
-          }
-          if (err && err.name !== "NotFoundException") {
-            setError(err.message || String(err));
-          }
+    const config = {
+      fps: 10,
+      qrbox: { width: 250, height: 250 },
+      aspectRatio: 1.7777778, // 16:9
+      formatsToSupport: [
+        "CODE_128",
+        "EAN_13",
+        "EAN_8",
+        "UPC_A",
+        "UPC_E",
+        "CODE_39",
+        "ITF",
+        "CODABAR",
+        "QR_CODE",
+      ], // include all types if needed
+    };
+
+    const html5QrCode = new Html5Qrcode("reader");
+    html5QrCodeRef.current = html5QrCode;
+
+    html5QrCode
+      .start(
+        { facingMode: "environment" }, // Rear camera
+        config,
+        (decodedText, decodedResult) => {
+          setBarcode(decodedText);
+          if (onDetected) onDetected(decodedText);
+          stopScan();
+        },
+        (err) => {
+          // On decode failure (can ignore)
         }
-      );
-    } catch (e) {
-      setError(e.message || String(e));
-      setScanning(false);
-    }
+      )
+      .catch((err) => {
+        setError("Camera start error: " + err);
+        setScanning(false);
+      });
   };
 
   const stopScan = () => {
-    if (controlsRef.current) {
-      controlsRef.current.stop(); // <-- STOP using controls object!
-      controlsRef.current = null;
+    if (html5QrCodeRef.current) {
+      html5QrCodeRef.current
+        .stop()
+        .then(() => {
+          html5QrCodeRef.current.clear();
+        })
+        .catch(() => {})
+        .finally(() => {
+          html5QrCodeRef.current = null;
+        });
     }
     setScanning(false);
   };
@@ -90,22 +99,23 @@ const BarcodeScanner = ({ onDetected }) => {
       <div className="text-center">
         <div className="relative">
           {/* Scanner with border and subtle shadow */}
-          <div className=" border-blue-100 rounded-xl shadow-lg overflow-hidden">
-            <video
-              ref={videoRef}
-              className="border-4 w-[100%] border-blue-100 rounded-xl shadow-lg overflow-hidden"
-              muted
-              autoPlay
-              playsInline
-            />{" "}
+          <div
+            className="border-blue-100 rounded-xl shadow-lg overflow-hidden"
+            style={{ position: "relative" }}
+          >
+            {/* This div is where html5-qrcode will render the video feed */}
+            <div
+              id="reader"
+              ref={scannerRef}
+              style={{
+                width: "100%",
+                minHeight: "260px",
+                borderRadius: "12px",
+                overflow: "hidden",
+                border: "4px solid #c7d2fe",
+              }}
+            />
           </div>
-
-          {/* Optional corner accents */}
-          <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-blue-500 rounded-tl-xl"></div>
-          <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-blue-500 rounded-tr-xl"></div>
-          <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-blue-500 rounded-bl-xl"></div>
-          <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-blue-500 rounded-br-xl"></div>
-
           {/* Optional scanning guide text */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg">
@@ -113,17 +123,7 @@ const BarcodeScanner = ({ onDetected }) => {
             </div>
           </div>
         </div>
-        {/* <h2 className="text-xl font-small mt-3 mb-4">Scan Item to add to your cart</h2> */}
-
-        {/* <button
-                            onClick={handleScan}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg mb-4"
-                        >
-                            Simulate Scan
-                        </button> */}
-        {/* <p className="text-gray-600 mt-1">Items in cart: {cartItems.length}</p> */}
       </div>
-
       <div>
         {!scanning ? (
           <button
@@ -150,12 +150,12 @@ const BarcodeScanner = ({ onDetected }) => {
             color: "#2a9d8f",
           }}
         >
-          Successfully scanned barcode
+          Successfully scanned barcode: {barcode}
         </div>
       )}
-      {/* {error && (
+      {error && (
         <div style={{ marginTop: 16, color: "red" }}>Error: {error}</div>
-      )} */}
+      )}
     </div>
   );
 };
