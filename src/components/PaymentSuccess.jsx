@@ -25,7 +25,7 @@ const PaymentSuccess = ({
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
-  const tax = subtotal * 0.1;
+  const tax = subtotal * 0.18;
   const grandTotal = subtotal + tax;
 
   return (
@@ -117,7 +117,7 @@ const PaymentSuccess = ({
                 <span>₹{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Tax (10%)</span>
+                <span>Tax (18%)</span>
                 <span>₹{tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-gray-200">

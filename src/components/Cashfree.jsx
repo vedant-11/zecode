@@ -21,17 +21,14 @@ export default function PayWithCashfreeButton({
     try {
       // 1. Get payment session id from back      console.log("Requesting session ID from backend...");
       await axios
-        .post(
-          "https://zecode-backend-production.up.railway.app/api/cashfree-order",
-          {
-            // Pass the necessary data; orderId might be generated backend now
-            amount: amount,
-            name: name,
-            email: email,
-            phone: phone,
-            customerId: customerId,
-          }
-        )
+        .post("http://localhost:4000/api/cashfree-order", {
+          // Pass the necessary data; orderId might be generated backend now
+          amount: amount,
+          name: name,
+          email: email,
+          phone: phone,
+          customerId: customerId,
+        })
         .then((response) => {
           console.log("Received response from backend:", response.data);
           const paymentSessionId = response.data.payment_session_id;
